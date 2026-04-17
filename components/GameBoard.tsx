@@ -11,23 +11,57 @@ type CardType = {
 };
 
 function generateCards(): CardType[] {
-  const cards: CardType[] = [];
+  // 🔥 cartas separadas
+  const ones: CardType[] = [];
+  const twos: CardType[] = [];
 
   pairs.forEach((letter) => {
-    cards.push({
+    ones.push({
       id: `${letter}-1`,
       pair: letter,
       img: `/memo/cartas/${letter}-1.png`,
     });
 
-    cards.push({
+    twos.push({
       id: `${letter}-2`,
       pair: letter,
       img: `/memo/cartas/${letter}-2.png`,
     });
   });
 
-  return cards.sort(() => Math.random() - 0.5);
+  // 🔀 shuffle independiente
+  const shuffle = (arr: CardType[]) =>
+    arr.sort(() => Math.random() - 0.5);
+
+  const shuffledOnes = shuffle(ones);
+  const shuffledTwos = shuffle(twos);
+
+  const result: CardType[] = [];
+
+  let i1 = 0;
+  let i2 = 0;
+
+  for (let i = 0; i < 16; i++) {
+    const row = Math.floor(i / 4);
+    const col = i % 4;
+
+    const rowPattern = ["b", "a", "a", "b"];
+    const start = rowPattern[row];
+    const isEvenCol = col % 2 === 0;
+
+    const isA =
+      start === "a"
+        ? isEvenCol
+        : !isEvenCol;
+
+    if (isA) {
+      result.push(shuffledOnes[i1++]); // 🔥 solo -1
+    } else {
+      result.push(shuffledTwos[i2++]); // 🔥 solo -2
+    }
+  }
+
+  return result;
 }
 
 export default function GameBoard({ onFinish }: { onFinish: () => void }) {
@@ -167,22 +201,22 @@ export default function GameBoard({ onFinish }: { onFinish: () => void }) {
       </div>
 
       {/* TIMER */}
-<div className="timer-row">
+      <div className="timer-row">
 
-  <div className="timer">
-    <div
-      className="timer-bar"
-      style={{ width: `${timeLeft}%` }}
-    >
-      <img src="/memo/carga-verde.png" />
-    </div>
+        <div className="timer">
+          <div
+            className="timer-bar"
+            style={{ width: `${timeLeft}%` }}
+          >
+            <img src="/memo/carga-verde.png" />
+          </div>
 
-    <img src="/memo/carga.png" className="timer-frame" />
-  </div>
+          <img src="/memo/carga.png" className="timer-frame" />
+        </div>
 
-  <img src="/logo.png" className="timer-logo" />
+        <img src="/logo.png" className="timer-logo" />
 
-</div>
+      </div>
 
     </div>
   );
