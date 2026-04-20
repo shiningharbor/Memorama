@@ -78,7 +78,7 @@ export default function GameBoard({ onFinish }: { onFinish: () => void }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft((prev) => (prev < 100 ? prev + 1 : 100));
-    }, 300);
+    }, 450);
 
     return () => clearInterval(interval);
   }, []);
